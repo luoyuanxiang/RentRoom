@@ -2,8 +2,8 @@
 @Component
 export default struct SearchBar {
 
-  @Prop bgColor: ResourceColor
-  @Prop fontColor: ResourceColor
+  @Prop bgColor: ResourceColor = 'rgba(255, 255, 255, 0)'
+  @Prop fontColor: ResourceColor = 'rgb(255, 255, 255)'
 
   build() {
     Row() {
@@ -32,7 +32,6 @@ export default struct SearchBar {
           .width(18)
           .height(18)
           .margin({ left: 10, right: 10 })
-          .fillColor(this.fontColor)
       }
       .width(244)
       .height(38)
@@ -56,5 +55,6 @@ export default struct SearchBar {
       bottom: 4
     })
     .justifyContent(FlexAlign.SpaceBetween)
+    .backgroundColor(this.bgColor)
   }
 }

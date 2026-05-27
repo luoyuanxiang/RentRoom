@@ -1,12 +1,12 @@
-import { IRoomRecommendData, ITag } from "../../model/RoomRecommendData"
+import { IRoomRecommendItem, ITagItem } from "../../model/RoomRecommendDataSource"
 
 @Component
 export default struct RoomRecommend {
 
-  @State recommendList: IRoomRecommendData[] = [
+  @State recommendList: IRoomRecommendItem[] = [
     {
       "id": "BJ1836395752604041216",
-      "housePicture": "http://localhost:6060/public/room55.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room55.jpg",
       "tags": [
         {
           "name": "官方核验"
@@ -29,7 +29,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1790593116399468544",
-      "housePicture": "http://localhost:6060/public/room97.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room97.jpg",
       "tags": [
         {
           "name": "官方核验"
@@ -49,7 +49,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1849651164342124544",
-      "housePicture": "http://localhost:6060/public/room38.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room38.jpg",
       "tags": [
         {
           "name": "租住保障"
@@ -78,7 +78,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1794637777627774976",
-      "housePicture": "http://localhost:6060/public/room60.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room60.jpg",
       "tags": [
         {
           "name": "精装"
@@ -101,7 +101,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1812033838247837696",
-      "housePicture": "http://localhost:6060/public/room59.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room59.jpg",
       "tags": [
         {
           "name": "官方核验"
@@ -121,7 +121,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1776946003492995072",
-      "housePicture": "http://localhost:6060/public/room76.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room76.jpg",
       "tags": [
         {
           "name": "精装"
@@ -141,7 +141,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1812782814240702464",
-      "housePicture": "http://localhost:6060/public/room48.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room48.jpg",
       "tags": [
         {
           "name": "官方核验"
@@ -161,7 +161,7 @@ export default struct RoomRecommend {
     },
     {
       "id": "BJ1823008714492215296",
-      "housePicture": "http://localhost:6060/public/room68.jpg",
+      "housePicture": "http://192.168.101.24:6060/public/room68.jpg",
       "tags": [
         {
           "name": "官方核验"
@@ -212,7 +212,7 @@ export default struct RoomRecommend {
   @Builder
   recommendListBuilder() {
     Grid() {
-      ForEach(this.recommendList, (item: IRoomRecommendData) => {
+      ForEach(this.recommendList, (item: IRoomRecommendItem) => {
         GridItem() {
           Stack() {
             Column() {
@@ -250,7 +250,7 @@ export default struct RoomRecommend {
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
 
                 Row({ space: 6 }) {
-                  ForEach(item.tags.slice(0, 2), (tag: ITag, index) => {
+                  ForEach(item.tags.slice(0, 2), (tag: ITagItem, index) => {
                     Text(tag.name)
                       .padding({
                         top: 1,
@@ -261,7 +261,7 @@ export default struct RoomRecommend {
                       .fontColor(index === 0 ? $r('sys.color.white') : '#B3B3B3')
                       .backgroundColor(index === 0 ? '#36D1A1' : '#F7F7F7')
                       .fontSize(12)
-                  }, (tag: ITag) => tag.name)
+                  }, (tag: ITagItem) => tag.name)
                 }.width('100%').margin({ top: 9 })
 
               }.padding(12).alignItems(HorizontalAlign.Start).height(91)
@@ -309,6 +309,5 @@ export default struct RoomRecommend {
       this.recommendListBuilder()
 
     }.width('100%')
-    .margin({ top: 10 })
   }
 }

@@ -29,3 +29,8 @@ export interface ITileItem {
   sub_title: string;
   title: string;
 }
+
+export interface IColor {
+  fontColor: ResourceColor;
+  bgColor: ResourceColor;
+}
