@@ -1,4 +1,5 @@
 import { IColor } from "../model/HomeData"
+import { common } from "@kit.AbilityKit"
 
 @Component
 export default struct ScrollContainer {
@@ -15,6 +16,7 @@ export default struct ScrollContainer {
   @State fontColor: ResourceColor = 'rgb(255, 255, 255)'
   // 顶部导航栏高度
   @StorageProp('topRectHeight') topRectHeight: number = 0
+
 
   @Builder
   defaultBuilder() {
@@ -38,6 +40,29 @@ export default struct ScrollContainer {
       this.bgColor = 'rgba(255, 255, 255, 0)'
       this.fontColor = 'rgb(255, 255, 255)'
     }
+    this.setStatusBarStyle()
+  }
+
+  // 同步状态栏样式
+  async setStatusBarStyle() {
+    try {
+      const uiContext = this.getUIContext();
+      const hostContext = uiContext.getHostContext() as common.UIAbilityContext;
+      if (!hostContext) return;
+      const windowClass = hostContext.windowStage.getMainWindowSync()
+      const isDark = this.scrollY <= 10
+      windowClass.setWindowSystemBarProperties({
+        statusBarContentColor: isDark ? '#FFFFFF' : '#000000',
+        navigationBarContentColor: isDark ? '#FFFFFF' : '#000000'
+      }).catch((err: Error) => {
+        // TODO: Implement error handling.
+        console.error('设置状态栏样式失败1',  err.message)
+      })
+    } catch (error) {
+      // TODO: Implement error handling.
+      console.error('设置状态栏样式失败2', error.message)
+    }
+
   }
 
   build() {
