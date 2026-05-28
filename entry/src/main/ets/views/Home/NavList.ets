@@ -2,48 +2,7 @@ import { INavItem } from "../../model/HomeData";
 
 @Component
 export default struct NavList {
-  @State navList: INavItem[] = [
-    {
-      "id": 1,
-      "title": "合租",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_1.jpg"
-    },
-    {
-      "id": 2,
-      "title": "独立主卧",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_2.jpg"
-    },
-    {
-      "id": 3,
-      "title": "整租1租",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_3.jpg"
-    },
-    {
-      "id": 4,
-      "title": "整租2-3租",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_4.jpg"
-    },
-    {
-      "id": 5,
-      "title": "小客厅",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_5.jpg"
-    },
-    {
-      "id": 6,
-      "title": "大客厅",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_6.jpg"
-    },
-    {
-      "id": 7,
-      "title": "短租",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_7.jpg"
-    },
-    {
-      "id": 8,
-      "title": "押金0首付",
-      "imageURL": "http://192.168.101.24:6060/public/home_nav_8.jpg"
-    }
-  ]
+  @Prop navList: INavItem[]
 
   build() {
     Column() {

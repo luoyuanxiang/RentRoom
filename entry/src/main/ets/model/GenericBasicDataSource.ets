@@ -3,7 +3,7 @@ export abstract class GenericBasicDataSource<T> implements IDataSource {
 
   private listeners: DataChangeListener[] = [];
 
-  private originDataArray: T[] = [];
+  public originDataArray: T[] = [];
 
   /**
    * 设置单条数据
