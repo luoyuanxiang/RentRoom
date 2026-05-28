@@ -10,7 +10,7 @@ export default struct NavBar {
         Text('填写通勤地址')
           .fontSize(14)
           .fontWeight(FontWeight.Medium)
-          .fontColor('#000000')
+          .fontColor($r('sys.color.black'))
       }
 
       Row({ space: 30 }) {
@@ -18,12 +18,12 @@ export default struct NavBar {
           Image($r('app.media.message'))
             .width(20)
             .height(20)
-            .fillColor('#000000')
+            .fillColor($r('sys.color.black'))
 
           Text('消息')
             .fontSize(12)
             .fontWeight(FontWeight.Medium)
-            .fontColor('#000000')
+            .fontColor($r('sys.color.black'))
         }
 
         Column({ space: 1 }) {
@@ -34,7 +34,7 @@ export default struct NavBar {
           Text('行程')
             .fontSize(12)
             .fontWeight(FontWeight.Medium)
-            .fontColor('#000000')
+            .fontColor($r('sys.color.black'))
         }
       }
     }.width('100%')

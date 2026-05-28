@@ -12,5 +12,6 @@ export default struct PlanList {
           .height(60)
       })
     }.width('100%')
+    .justifyContent(FlexAlign.SpaceBetween)
   }
 }

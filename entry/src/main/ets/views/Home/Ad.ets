@@ -6,7 +6,6 @@ export default struct Ad {
   build() {
     Row() {
       Image(this.adPicture)
-        .width(328)
         .height(61)
     }
     .width('100%')

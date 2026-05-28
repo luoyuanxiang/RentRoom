@@ -7,7 +7,7 @@ import My from './My'
 @Entry
 @Component
 struct Index {
-  @State currentTabIndex: number = 0
+  @State currentTabIndex: number = 2
 
   // 底部导航栏高度
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0
@@ -62,7 +62,7 @@ struct Index {
       })
       .vertical(false)
       .barMode(BarMode.Fixed)
-      .scrollable(false)
+      .scrollable(true)
       .width('100%')
       .height('100%')
       .backgroundColor(Color.White)

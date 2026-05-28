@@ -1,12 +1,12 @@
-export interface ServiceData {
-  cleaningServiceInfo: CleaningServiceInfoItem[];
-  homeServiceList: HomeServiceItem[];
-  newcomerZone: NewcomerZoneItem;
-  serviceActivity: ServiceActivityItem;
-  vipServiceList: VipServiceListItem[];
+export interface IServiceData {
+  cleaningServiceInfo: ICleaningServiceInfoItem[];
+  homeServiceList: IHomeServiceItem[];
+  newcomerZone: INewcomerZoneItem;
+  serviceActivity: IServiceActivityItem;
+  vipServiceList: IVipServiceListItem[];
 }
 
-export interface CleaningServiceInfoItem {
+export interface ICleaningServiceInfoItem {
   img: string;
   originalPrice: string;
   priceAfterDiscounts: string;
@@ -14,23 +14,23 @@ export interface CleaningServiceInfoItem {
   title: string;
 }
 
-export interface HomeServiceItem {
+export interface IHomeServiceItem {
   icon: string;
   title: string;
 }
 
-export interface NewcomerZoneItem {
+export interface INewcomerZoneItem {
   img: string;
 }
 
-export interface ServiceActivityItem {
+export interface IServiceActivityItem {
   img: string;
   name: string;
   subTitle: string;
   title: string;
 }
 
-export interface VipServiceListItem {
+export interface IVipServiceListItem {
   content: number;
   name: string;
 }
