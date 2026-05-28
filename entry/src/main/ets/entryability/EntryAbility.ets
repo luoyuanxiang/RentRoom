@@ -50,7 +50,7 @@ export default class EntryAbility extends UIAbility {
         let topRectHeight = avoidArea.topRect.height; // 获取状态栏区域高度
         AppStorage.setOrCreate('topRectHeight', topRectHeight);
 
-        console.log('状态栏高度', topRectHeight)
+
 
         // 3. 注册监听函数，动态获取避让区域数据
         windowClass.on('avoidAreaChange', (data) => {
@@ -62,6 +62,11 @@ export default class EntryAbility extends UIAbility {
             AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
           }
         });
+
+        // 4. 获取屏幕宽高并存储起来
+        const properties = windowClass.getWindowProperties()
+        AppStorage.setOrCreate('windowHeight', properties.windowRect.height);
+        AppStorage.setOrCreate('windowWidth', properties.windowRect.width);
 
       } catch (error) {
         hilog.error(DOMAIN, 'testTag', 'Failed to set full screen. Cause: %{public}s', JSON.stringify(error));

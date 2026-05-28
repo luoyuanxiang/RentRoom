@@ -1,6 +1,5 @@
 import { IBannerItem } from "../../model/HomeData"
 
-@Preview
 @Component
 export default struct SwiperLayout {
 

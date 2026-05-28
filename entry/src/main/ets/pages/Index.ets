@@ -7,7 +7,7 @@ import My from './My'
 @Entry
 @Component
 struct Index {
-  @State currentTabIndex: number = 0
+  @State currentTabIndex: number = 1
 
   // 底部导航栏高度
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0

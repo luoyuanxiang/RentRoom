@@ -1,9 +1,8 @@
-@Preview
 @Component
 export default struct SearchBar {
 
-  @Prop bgColor: ResourceColor = 'rgba(255, 255, 255, 0)'
-  @Prop fontColor: ResourceColor = 'rgb(255, 255, 255)'
+  @Prop bgColor: ResourceColor
+  @Prop fontColor: ResourceColor
 
   build() {
     Row() {
