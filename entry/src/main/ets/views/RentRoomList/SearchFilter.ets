@@ -1,19 +1,11 @@
 import { getProvinceListApi, getCityListApi, getDistrictListApi } from "../../api/rentRoom"
 import {
-  IProvinceList,
-  ICityList,
-  IDistrictList,
   ICityItem,
   IDistrictItem,
   IProvinceItem,
   ILocationData
 } from "../../model/RentRoomData"
 import { globalEmitter } from "../../utils/emitter"
-
-interface IArrowDownType {
-  icon: ResourceStr;
-  active: ResourceStr;
-}
 
 @Component
 export default struct SearchFilter {
@@ -34,16 +26,6 @@ export default struct SearchFilter {
     searchDistrictName: ''
   }
 
-  @State arrowDown: ResourceStr = $r('app.media.arrow_down_3')
-  @State arrowDownActive: ResourceStr = $r('app.media.arrow_down_3_active')
-  @State arrowDownArr: ResourceStr[] = [
-    $r('app.media.arrow_down_3'),
-    $r('app.media.arrow_down_3'),
-    $r('app.media.arrow_down_3'),
-    $r('app.media.arrow_down_3')
-  ]
-  @State searchTypeIndex: number = 0
-
   getSearchTypeName(item: string) {
     if (item === '地区') {
       return this.locationData.searchDistrictName || item
@@ -61,7 +43,6 @@ export default struct SearchFilter {
   chooseSearchType(searchType: string) {
     if (this.currentSearchType === searchType) {
       this.currentSearchType = ''
-      this.arrowDownArr[this.searchTypeIndex] = $r('app.media.arrow_down_3')
       return;
     }
 
@@ -128,9 +109,6 @@ export default struct SearchFilter {
     })
     this.locationData.isSearch = true
     this.locationClose()
-    this.arrowDownArr.forEach((item, index) => {
-      this.arrowDownArr[index] = $r('app.media.arrow_down_3')
-    })
   }
 
   locationClose() {
@@ -271,15 +249,8 @@ export default struct SearchFilter {
               .constraintSize({
                 maxWidth: 60,
               })
-            Image(this.arrowDownArr[index]).imageStyles()
+            Image(this.currentSearchType === item ? $r('app.media.arrow_down_3_active') : $r('app.media.arrow_down_3')).imageStyles()
           }.width('25%').height('100%').justifyContent(FlexAlign.Center).onClick(() => {
-            this.searchTypeIndex = index
-            this.arrowDownArr[index] = $r('app.media.arrow_down_3_active')
-            this.arrowDownArr.forEach((item, index) => {
-              if (index !== this.searchTypeIndex) {
-                this.arrowDownArr[index] = $r('app.media.arrow_down_3')
-              }
-            })
             this.chooseSearchType(item)
           })
         }, (item: string) => item)
