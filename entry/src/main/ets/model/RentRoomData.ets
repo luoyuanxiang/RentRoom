@@ -65,19 +65,14 @@ export interface IProvinceItem {
 
 export type IProvinceList = IProvinceItem[]
 
-export interface ICityItem {
-  code?: string;
-  name?: string;
+export interface ICityItem extends IProvinceItem {
   provinceCode?: string;
 }
 
 export type ICityList = ICityItem[]
 
-export interface IDistrictItem {
+export interface IDistrictItem extends ICityItem {
   cityCode: string;
-  code: string;
-  name: string;
-  provinceCode: string;
 }
 
 export type IDistrictList = IDistrictItem[]
