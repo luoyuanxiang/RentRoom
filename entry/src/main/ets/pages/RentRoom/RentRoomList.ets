@@ -17,7 +17,9 @@ struct RentRoomList {
       Column() {
         NavBar({ title: '租房列表' })
         SearchFilter()
-      }.height('100%').padding({ top: this.getUIContext().px2vp(this.topRectHeight) })
-    }.height('100%').alignContent(Alignment.TopStart)
+      }
+      .padding({ top: this.getUIContext().px2vp(this.topRectHeight) })
+    }
+    .alignContent(Alignment.TopStart)
   }
 }

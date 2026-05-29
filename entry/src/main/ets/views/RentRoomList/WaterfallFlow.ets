@@ -1,5 +1,5 @@
 import { getRentRoomListApi } from "../../api/rentRoom";
-import { IGetRentRoomListParams, IRentRoomItem, RentRoomListDataSource } from "../../model/RentRoomData";
+import { IActivity, IGetRentRoomListParams, IRentRoomItem, RentRoomListDataSource } from "../../model/RentRoomData";
 import { ITagItem } from "../../model/RoomRecommendDataSource";
 import { globalEmitter } from "../../utils/emitter";
 
@@ -12,6 +12,8 @@ export default struct WaterfallFlow {
     page: 1,
     limit: 10
   }
+
+  @State isEnd: boolean = false
 
   aboutToAppear() {
     this.getRentRoomList()
@@ -37,26 +39,47 @@ export default struct WaterfallFlow {
 
   async getRentRoomList() {
     const res = await getRentRoomListApi(this.searchOptions)
-    this.rootRoomListDataSource.setList(res.records)
+    if (this.searchOptions.page === 1) {
+      this.rootRoomListDataSource.setList([])
+    }
+    res.records.forEach((item: IRentRoomItem) => {
+      if (item.activity) {
+        item.activity.textContent = Reflect.get(item.activity, '#text')
+      }
+      this.rootRoomListDataSource.setData(item)
+    })
     this.total = res.total
   }
 
   // 2. 定义回调函数
   loadMore = () => {
+    if (this.total <= this.rootRoomListDataSource.totalCount()) {
+      this.isEnd = true
+    }
     this.searchOptions.page++;
     this.getRentRoomList()
   }
 
   @Builder
   footer() {
-    Row({ space: 5 }) {
-      LoadingProgress().width(20).height(20).color(Color.Gray)
-      Text('加载数据中...').fontSize(12).fontColor(Color.Gray)
-    }.width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
+    Row({ space: 10 }) {
+      if (this.isEnd) {
+          Text('到底了').fontSize(12)
+            .margin({ top: 10 })
+      } else {
+        Refresh({ refreshing: true })
+        Row({ space: 5 }) {
+          Text('加载数据中...').fontSize(12)
+            .margin({ top: 10 })
+        }.width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
+      }
+    }
+    .width('100%')
+    .justifyContent(FlexAlign.Center)
   }
 
   build() {
-    if (this.rootRoomListDataSource.totalCount()) {
+    Column() {
       WaterFlow(
         {
           footer: () => {
@@ -75,7 +98,7 @@ export default struct WaterfallFlow {
                       Text(room.activity.title).fontSize(14).fontWeight(700)
                     }
 
-                    Text(room.activity.title)
+                    Text(room.activity.textContent)
                       .fontColor(room.activity.textColor)
                       .backgroundColor(room.activity.textBackGroundColor)
                       .padding({
@@ -147,14 +170,15 @@ export default struct WaterfallFlow {
             .width(165)
             .height('100%')
           }.height(room.activity ? 320 : 210)
+
         }, (room: IRentRoomItem) => room.id)
       }
       .columnsTemplate("1fr 1fr")
       .columnsGap(10)
       .rowsGap(10)
-      .backgroundColor(Color.Gray)
       .width('100%')
-      .layoutWeight(1)
+      // 边缘效果：弹簧回弹效果
+      .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
       .layoutDirection(FlexDirection.Column)
       .padding({ left: 10, right: 10, top: 10 })
       .onReachEnd(this.loadMore) // 1. 绑定触底事件

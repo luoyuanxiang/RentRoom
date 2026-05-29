@@ -44,6 +44,7 @@ export interface IActivity {
   textBackGroundColor: string
   "#text": string
   icon: string
+  textContent: string
 }
 
 export interface IRentRoomItem extends IRoomRecommendItem {

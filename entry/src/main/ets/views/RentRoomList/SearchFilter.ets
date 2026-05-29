@@ -10,6 +10,11 @@ import {
 } from "../../model/RentRoomData"
 import { globalEmitter } from "../../utils/emitter"
 
+interface IArrowDownType {
+  icon: ResourceStr;
+  active: ResourceStr;
+}
+
 @Component
 export default struct SearchFilter {
   @State searchTypeList: string[] = ['地区', '租金', '付款方式', '排序']
@@ -29,6 +34,16 @@ export default struct SearchFilter {
     searchDistrictName: ''
   }
 
+  @State arrowDown: ResourceStr = $r('app.media.arrow_down_3')
+  @State arrowDownActive: ResourceStr = $r('app.media.arrow_down_3_active')
+  @State arrowDownArr: ResourceStr[] = [
+    $r('app.media.arrow_down_3'),
+    $r('app.media.arrow_down_3'),
+    $r('app.media.arrow_down_3'),
+    $r('app.media.arrow_down_3')
+  ]
+  @State searchTypeIndex: number = 0
+
   getSearchTypeName(item: string) {
     if (item === '地区') {
       return this.locationData.searchDistrictName || item
@@ -46,6 +61,7 @@ export default struct SearchFilter {
   chooseSearchType(searchType: string) {
     if (this.currentSearchType === searchType) {
       this.currentSearchType = ''
+      this.arrowDownArr[this.searchTypeIndex] = $r('app.media.arrow_down_3')
       return;
     }
 
@@ -207,13 +223,21 @@ export default struct SearchFilter {
 
     Row({ space: 22 }) {
       Button('重置')
-        .buttonStyles(95, '#F0F0F0', '#67C0A8').onClick(this.locationReset)
+        .buttonStyles(95, '#F0F0F0', '#67C0A8').onClick(() => {
+        this.locationReset()
+      })
       Button('查看房源')
         .buttonStyles(211, '#67C0A8', '#fff')
+        .onClick(() => {
+          this.locationSearch()
+        })
     }.height(58).width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
 
+    // 遮罩层
     Row() {
-    }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(this.locationSearch)
+    }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(() => {
+      this.locationSearch()
+    })
   }
 
   @Builder
@@ -234,7 +258,7 @@ export default struct SearchFilter {
   build() {
     Column() {
       Row() {
-        ForEach(this.searchTypeList, (item: string) => {
+        ForEach(this.searchTypeList, (item: string, index: number) => {
           Row({ space: 6 }) {
             Text(item)
               .fontSize(12)
@@ -244,8 +268,10 @@ export default struct SearchFilter {
               .constraintSize({
                 maxWidth: 60,
               })
-            Image($r('app.media.arrow_down_3')).imageStyles()
+            Image(this.arrowDownArr[index]).imageStyles()
           }.width('25%').height('100%').justifyContent(FlexAlign.Center).onClick(() => {
+            this.searchTypeIndex = index
+            this.arrowDownArr[index] = $r('app.media.arrow_down_3_active')
             this.chooseSearchType(item)
           })
         }, (item: string) => item)
@@ -269,7 +295,7 @@ export default struct SearchFilter {
 
 @Extend(Image)
 function imageStyles() {
-  .width(6).height(3).objectFit(ImageFit.Fill)
+  .width(20).height(20).objectFit(ImageFit.Fill)
 }
 
 @Extend(Button)
