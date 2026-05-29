@@ -2,6 +2,7 @@ import { IVipServiceListItem } from "../../model/ServiceData";
 
 @Component
 export default struct VIP {
+
   @Prop vipServiceList: IVipServiceListItem[]
 
   // 顶部导航栏高度

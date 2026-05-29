@@ -34,16 +34,11 @@ export default struct Service {
 
   async getServiceData() {
     const serviceData = await getServiceDataApi()
-    this.cleaningServiceInfo = serviceData.cleaningServiceInfo || []
-    this.homeServiceList = serviceData.homeServiceList || []
-    this.newcomerZone = serviceData.newcomerZone || { img: '' }
-    this.serviceActivity = serviceData.serviceActivity || {
-      img: '',
-      name: '',
-      subTitle: '',
-      title: ''
-    }
-    this.vipServiceList = serviceData.vipServiceList || []
+    this.cleaningServiceInfo = serviceData.cleaningServiceInfo
+    this.homeServiceList = serviceData.homeServiceList
+    this.newcomerZone = serviceData.newcomerZone
+    this.serviceActivity = serviceData.serviceActivity
+    this.vipServiceList = serviceData.vipServiceList
   }
 
   @Builder
@@ -58,8 +53,8 @@ export default struct Service {
       Column() {
         VIP({ vipServiceList: this.vipServiceList })
         DomesticService({ homeServiceList: this.homeServiceList })
-        ServiceCalendar()
-        ServiceTabs()
+        ServiceCalendar({ serviceActivity: this.serviceActivity })
+        ServiceTabs({ serviceTabImage: this.newcomerZone.img, cleaningServiceInfo: this.cleaningServiceInfo })
       }
       .padding({
         left: 10,
@@ -71,7 +66,9 @@ export default struct Service {
   build() {
     ScrollContainer({
       navBuilder: this.navBuilder,
-      contentBuilder: this.contentBuilder
+      contentBuilder: () => {
+        this.contentBuilder()
+      }
     })
   }
 }

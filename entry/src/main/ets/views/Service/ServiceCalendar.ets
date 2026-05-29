@@ -5,12 +5,8 @@ import Calendar from "../../utils/calendar";
 @Component
 export default struct ServiceCalendar {
 
-  @Prop serviceActivity: IServiceActivityItem = {
-    "name": "12.9-12.19 限享6大礼包",
-    "img": "http://localhost:6060/public/ServiceActivityImg.png",
-    "title": "包年服务好礼享不停",
-    "subTitle": "最高领¥300优惠券"
-  }
+  @Prop serviceActivity: IServiceActivityItem
+
   @State calendarList: string[] = []
 
   aboutToAppear() {
