@@ -53,7 +53,7 @@ export default struct ScrollContainer {
       .height('100%')
       .scrollBar(BarState.Off)
       .align(Alignment.TopStart)
-      .backgroundColor(Color.Transparent)
+      .backgroundColor('#ffedeeee')
       .onDidScroll(this.handleScroll)
 
       // 搜索栏

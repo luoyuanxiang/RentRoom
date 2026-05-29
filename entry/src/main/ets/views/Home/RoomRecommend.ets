@@ -39,6 +39,11 @@ export default struct RoomRecommend {
           .width(4)
           .height(8)
       }.margin({ right: 10 })
+      .onClick(() => {
+        this.getUIContext().getRouter().pushUrl({
+          url: 'pages/RentRoom/RentRoomList'
+        }, () => {})
+      })
     }.width('100%')
   }
 

@@ -119,6 +119,7 @@ export default struct ServiceTabs {
           .layoutWeight(1).alignItems(HorizontalAlign.Start)
         })
       }.margin({ top: 8 })
+      .justifyContent(FlexAlign.SpaceBetween)
     }
   }
 
