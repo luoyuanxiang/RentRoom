@@ -126,8 +126,11 @@ export default struct SearchFilter {
       cityCode: this.locationData.cityCode,
       districtCode: this.locationData.districtCode,
     })
-    this.locationData.isSearch = true;
+    this.locationData.isSearch = true
     this.locationClose()
+    this.arrowDownArr.forEach((item, index) => {
+      this.arrowDownArr[index] = $r('app.media.arrow_down_3')
+    })
   }
 
   locationClose() {
@@ -272,6 +275,11 @@ export default struct SearchFilter {
           }.width('25%').height('100%').justifyContent(FlexAlign.Center).onClick(() => {
             this.searchTypeIndex = index
             this.arrowDownArr[index] = $r('app.media.arrow_down_3_active')
+            this.arrowDownArr.forEach((item, index) => {
+              if (index !== this.searchTypeIndex) {
+                this.arrowDownArr[index] = $r('app.media.arrow_down_3')
+              }
+            })
             this.chooseSearchType(item)
           })
         }, (item: string) => item)
