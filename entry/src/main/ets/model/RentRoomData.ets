@@ -19,6 +19,8 @@ export interface ILocationData {
   searchCityCode: string,
   searchDistrictCode: string,
   searchDistrictName: string
+  maxRent?: number;
+  minRent?: number;
 }
 
 export interface IGetRentRoomListParams {
@@ -26,11 +28,11 @@ export interface IGetRentRoomListParams {
   limit: number;
   cityCode?: string;
   districtCode?: string;
+  provinceCode?: string;
   maxRent?: number;
   minRent?: number;
   orderBy?: IOrderType;
   paymentType?: string;
-  provinceCode?: string;
 }
 
 export interface IGetRentRoomListResponse {
@@ -55,7 +57,6 @@ export type IRentRoomList = IRentRoomItem[]
 
 
 export class RentRoomListDataSource extends GenericBasicDataSource<IRentRoomItem> {
-
 }
 
 export interface IProvinceItem {
@@ -83,4 +84,45 @@ export interface GetCityListParams {
 
 export interface GetDistrictListParams {
   cityCode: string
+}
+
+export interface IRentPriceItem {
+  id: number;
+  minRent: string;
+  maxRent: string;
+  text: string;
+}
+
+export type IRentPriceList = IRentPriceItem[]
+
+export interface IRentPriceData {
+  rentPriceList: IRentPriceItem[]
+  rentPrice?: IRentPriceItem,
+  isSearch?: boolean,
+  searchRentPrice?: IRentPriceItem
+}
+
+
+export interface ISortItem {
+  id: number;
+  icon: Resource;
+  text: string;
+  orderBy?: IOrderBy;
+  orderType?: IOrderType;
+}
+
+export type ISortList = ISortItem[]
+
+export interface ISortData {
+  sortList: ISortItem[]
+  sort?: ISortItem,
+  isSearch?: boolean,
+  searchSort?: ISortItem
+}
+
+export interface IPaymentTypeData {
+  paymentTypeList: string[],
+  isSearch: boolean,
+  paymentType: string,
+  searchPaymentType: string
 }

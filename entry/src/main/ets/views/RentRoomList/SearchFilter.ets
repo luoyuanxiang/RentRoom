@@ -1,17 +1,76 @@
-import { getProvinceListApi, getCityListApi, getDistrictListApi } from "../../api/rentRoom"
-import {
+import type {
   ICityItem,
   IDistrictItem,
+  ILocationData,
+  IPaymentTypeData,
   IProvinceItem,
-  ILocationData
-} from "../../model/RentRoomData"
-import { globalEmitter } from "../../utils/emitter"
+  IRentPriceData,
+  IRentPriceItem,
+  ISortData,
+  ISortItem,
+} from '../../model/RentRoomData'
+
+import { getCityListApi, getDistrictListApi, getProvinceListApi } from '../../api/rentRoom'
+
+import { globalEmitter } from '../../utils/emitter'
 
 @Component
 export default struct SearchFilter {
   @State searchTypeList: string[] = ['地区', '租金', '付款方式', '排序']
   @State currentSearchType: string = ''
-  // 3. 地区数据
+
+  getSearchTypeName(item: string): string {
+    if (item === '地区') {
+      return this.locationData.searchDistrictName || item
+    } else if (item === '租金') {
+      return this.rentPriceData.searchRentPrice?.text || item
+    } else if (item === '付款方式') {
+      return this.paymentTypeData.searchPaymentType || item
+    } else if (item === '排序') {
+      return this.sortData.sort?.text || item
+    }
+    return item
+  }
+
+  getSearchTypeNameColor(item: string): string {
+    if (item === '地区') {
+      return this.locationData.searchDistrictName ? '#FFFFFF' : '#000000'
+    } else if (item === '租金') {
+      return this.rentPriceData.searchRentPrice?.text ? '#FFFFFF' : '#000000'
+    } else if (item === '付款方式') {
+      return this.paymentTypeData.searchPaymentType ? '#FFFFFF' : '#000000'
+    } else if (item === '排序') {
+      return this.sortData.sort?.text && this.sortData.sort?.text !== '综合排序' ? '#FFFFFF' : '#000000'
+    }
+    return ''
+  }
+
+  chooseSearchType(searchType: string) {
+    if (this.currentSearchType === searchType) {
+      this.currentSearchType = ''
+      return;
+    }
+
+    // 每个类型需要不同的处理
+    if (searchType === '地区') {
+      this.locationData.isSearch = false
+      this.locationClose()
+      this.getProvinceList()
+    } else if (searchType === '租金') {
+      this.rentPriceData.isSearch = false
+      this.rentPriceClose()
+    } else if (searchType === '付款方式') {
+      this.paymentTypeData.isSearch = false
+      this.paymentTypeClose()
+    } else if (searchType === '排序') {
+      this.sortClose()
+    }
+
+    // 更新
+    this.currentSearchType = searchType;
+  }
+
+  // 地区
   @State locationData: ILocationData = {
     provinceList: [],
     cityList: [],
@@ -26,62 +85,24 @@ export default struct SearchFilter {
     searchDistrictName: ''
   }
 
-  getSearchTypeName(item: string) {
-    if (item === '地区') {
-      return this.locationData.searchDistrictName || item
-    }
-    return item
-  }
-
-  getSearchTypeNameColor(item: string) {
-    if (item === '地区') {
-      return this.locationData.searchDistrictName ? '#67C0A8' : '#000000'
-    }
-    return item
-  }
-
-  chooseSearchType(searchType: string) {
-    if (this.currentSearchType === searchType) {
-      this.currentSearchType = ''
-      return;
-    }
-
-    // 每个类型需要不同的处理
-    if (searchType === '地区') {
-      this.locationData.isSearch = false
-      this.locationClose()
-      this.getProvinceList()
-    }
-
-    // 更新
-    this.currentSearchType = searchType;
-  }
-
-  // 获取省市区数据方法
   async getProvinceList() {
     const provinceList = await getProvinceListApi()
-    this.locationData.provinceList = provinceList || []
-    if (this.locationData.provinceList.length > 0) {
-      this.locationData.provinceCode = provinceList[0].code || ''
-    }
+    this.locationData.provinceList = provinceList
+    this.locationData.provinceCode = this.locationData.provinceCode || provinceList[0].code;
     this.getCityList()
   }
 
   async getCityList() {
     const cityList = await getCityListApi(this.locationData.provinceCode)
     this.locationData.cityList = cityList;
-    if (this.locationData.cityList.length > 0) {
-      this.locationData.cityCode = cityList[0].code || ''
-    }
+    this.locationData.cityCode = this.locationData.cityCode || cityList[0].code;
     this.getDistrictList()
   }
 
   async getDistrictList() {
     const districtList = await getDistrictListApi(this.locationData.cityCode)
     this.locationData.districtList = districtList
-    if (this.locationData.districtList.length > 0) {
-      this.locationData.districtCode = districtList[0].code || ''
-    }
+    this.locationData.districtCode = this.locationData.districtCode || districtList[0].code;
   }
 
   handleProvinceChange(provinceCode: string) {
@@ -107,7 +128,7 @@ export default struct SearchFilter {
       cityCode: this.locationData.cityCode,
       districtCode: this.locationData.districtCode,
     })
-    this.locationData.isSearch = true
+    this.locationData.isSearch = true;
     this.locationClose()
   }
 
@@ -118,7 +139,7 @@ export default struct SearchFilter {
       this.locationData.searchCityCode = this.locationData.cityCode
       this.locationData.searchDistrictCode = this.locationData.districtCode
       this.locationData.searchDistrictName =
-        this.locationData.districtList.find(item => item.code === this.locationData.districtCode)?.name || ''
+        this.locationData.districtList.find(item => item.code === this.locationData.districtCode)!.name
     } else {
       this.locationData.provinceCode = this.locationData.searchProvinceCode
       this.locationData.cityCode = this.locationData.searchCityCode
@@ -141,120 +162,406 @@ export default struct SearchFilter {
           ListItem() {
             Row() {
               Text(item.name)
-                .fontSize(12)
+                .fontSize(sm())
                 .fontColor(item.code === this.locationData.provinceCode ? '#67C0A8' : Color.Black)
             }
             .width('100%')
             .padding({
-              left: 16,
-              right: 16,
-              top: 6,
-              bottom: 6
+              left: rvp(16),
+              right: rvp(16),
+              top: rvp(6),
+              bottom: rvp(6)
             })
           }.onClick(() => {
-            this.locationData.provinceCode = item.code;
-            this.getCityList()
+            this.handleProvinceChange(item.code)
           })
         }, (item: IProvinceItem) => item.code)
-      }.width(120).height('100%').backgroundColor('#666666').scrollBar(BarState.Off)
+      }.width(rvp(120)).height('100%').backgroundColor('#F7F7F7')
 
       List() {
         ForEach(this.locationData.cityList, (item: ICityItem) => {
           ListItem() {
             Row() {
               Text(item.name)
-                .fontSize(12)
+                .fontSize(sm())
                 .fontColor(item.code === this.locationData.cityCode ? '#67C0A8' : Color.Black)
             }
             .width('100%')
             .padding({
-              left: 16,
-              right: 16,
-              top: 6,
-              bottom: 6
+              left: rvp(16),
+              right: rvp(16),
+              top: rvp(6),
+              bottom: rvp(6)
             })
           }.onClick(() => {
-            this.locationData.cityCode = item.code || ''
-            this.getDistrictList()
+            this.handleCityChange(item.code)
           })
         }, (item: ICityItem) => item.code)
-      }.width(120).height('100%').backgroundColor('#EBEBEB').scrollBar(BarState.Off)
+      }.width(rvp(120)).height('100%').backgroundColor('#EBEBEB')
 
       List() {
         ForEach(this.locationData.districtList, (item: IDistrictItem) => {
           ListItem() {
             Row() {
               Text(item.name)
-                .fontSize(12)
+                .fontSize(sm())
                 .fontColor(item.code === this.locationData.districtCode ? '#67C0A8' : Color.Black)
             }
             .width('100%')
             .padding({
-              left: 16,
-              right: 16,
-              top: 6,
-              bottom: 6
+              left: rvp(16),
+              right: rvp(16),
+              top: rvp(6),
+              bottom: rvp(6)
             })
           }.onClick(() => {
-            this.locationData.districtCode = item.code;
+            this.handleDistrictChange(item.code)
           })
         }, (item: IDistrictItem) => item.code)
-      }.width(120).height('100%').backgroundColor('#E6E6E6').scrollBar(BarState.Off)
-    }.height(240).width('100%').backgroundColor(Color.White)
+      }.width(rvp(120)).height('100%').backgroundColor('#E6E6E6')
+    }.height(rvp(240)).width('100%').backgroundColor(Color.White)
 
-    Row({ space: 22 }) {
+    Row({ space: rvp(22) }) {
       Button('重置')
-        .buttonStyles(95, '#F0F0F0', '#67C0A8').onClick(() => {
+        .buttonStyles(rvp(95), '#F0F0F0', '#666666').onClick(() => {
         this.locationReset()
       })
       Button('查看房源')
-        .buttonStyles(211, '#67C0A8', '#fff')
+        .buttonStyles(rvp(211), '#67C0A8', Color.White)
         .onClick(() => {
           this.locationSearch()
         })
-    }.height(58).width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
+    }.height(rvp(58)).width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
 
-    // 遮罩层
     Row() {
     }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(() => {
-      this.locationSearch()
+      this.locationClose()
     })
+  }
+
+  // 租金
+  @State rentPriceData: IRentPriceData = {
+    rentPriceList: [
+      {
+        id: 1,
+        minRent: '0',
+        maxRent: '0',
+        text: '不限'
+      },
+      {
+        id: 2,
+        minRent: '0',
+        maxRent: '1500',
+        text: '1500元以下'
+      },
+      {
+        id: 3,
+        minRent: '1500',
+        maxRent: '2500',
+        text: '1500-2500元'
+      },
+      {
+        id: 4,
+        minRent: '2500',
+        maxRent: '3500',
+        text: '2500-3500元'
+      },
+      {
+        id: 5,
+        minRent: '3500',
+        maxRent: '4500',
+        text: '3500-4500元'
+      },
+      {
+        id: 6,
+        minRent: '4500',
+        maxRent: '6000',
+        text: '4500-6000元'
+      },
+      {
+        id: 7,
+        minRent: '6000',
+        maxRent: '8000',
+        text: '6000-8000元'
+      },
+      {
+        id: 8,
+        minRent: '8000',
+        maxRent: '10000',
+        text: '8000-10000元'
+      },
+      {
+        id: 9,
+        minRent: '10000',
+        maxRent: '0',
+        text: '10000元以上'
+      }
+    ],
+    isSearch: false,
+  }
+
+  handleRentPriceChange(rentPrice: IRentPriceItem) {
+    this.rentPriceData.rentPrice = rentPrice
+  }
+
+  rentPriceSearch() {
+    globalEmitter.emit('searchOptionsChange', {
+      minRent: this.rentPriceData.rentPrice?.minRent,
+      maxRent: this.rentPriceData.rentPrice?.maxRent,
+    })
+    this.rentPriceData.isSearch = true;
+    this.rentPriceClose()
+  }
+
+  rentPriceClose() {
+    this.currentSearchType = ''
+    if (this.rentPriceData.isSearch) {
+      this.rentPriceData.searchRentPrice = this.rentPriceData.rentPrice
+    } else {
+      this.rentPriceData.rentPrice = this.rentPriceData.searchRentPrice
+    }
+  }
+
+  rentPriceReset() {
+    this.rentPriceData.rentPrice = {
+      id: 0,
+      minRent: '',
+      maxRent: '',
+      text: '不限'
+    }
   }
 
   @Builder
   RentPriceRender() {
-    Text('RentPriceRender')
+    Column() {
+      Grid() {
+        ForEach(this.rentPriceData.rentPriceList, (rentPrice: IRentPriceItem) => {
+          GridItem() {
+            Text(rentPrice.text)
+              .textStyles(this.rentPriceData.rentPrice?.id === rentPrice.id)
+              .onClick(() => {
+                this.handleRentPriceChange(rentPrice)
+              })
+          }
+        }, (rentPrice: IRentPriceItem) => rentPrice.id + '')
+      }
+      .columnsTemplate('1fr 1fr 1fr')
+      .rowsTemplate('1fr 1fr 1fr')
+      .height(rvp(194 - 58))
+
+      Row({ space: rvp(22) }) {
+        Button('重置')
+          .buttonStyles(rvp(95), '#F0F0F0', '#666666')
+          .onClick(() => {
+            this.rentPriceReset()
+          })
+        Button('查看房源')
+          .buttonStyles(rvp(211), '#67C0A8', Color.White)
+          .onClick(() => {
+            this.rentPriceSearch()
+          })
+      }.height(rvp(58)).width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
+    }
+    .height(rvp(202))
+    .width('100%')
+    .backgroundColor(Color.White)
+    .padding({ left: rvp(10), right: rvp(10) })
+
+    Row() {
+    }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(() => {
+      this.rentPriceClose()
+    })
+  }
+
+  // 付款方式
+  @State paymentTypeData: IPaymentTypeData = {
+    paymentTypeList: ['月付', '季付', '半年付', '年付'],
+    isSearch: false,
+    paymentType: '',
+    searchPaymentType: ''
+  }
+
+  handlePaymentTypeChange(paymentType: string) {
+    this.paymentTypeData.paymentType = paymentType
+  }
+
+  paymentTypeSearch() {
+    globalEmitter.emit('searchOptionsChange', {
+      paymentType: this.paymentTypeData.searchPaymentType
+    })
+    this.paymentTypeData.isSearch = true;
+    this.paymentTypeClose()
+  }
+
+  paymentTypeClose() {
+    this.currentSearchType = ''
+    if (this.paymentTypeData.isSearch) {
+      this.paymentTypeData.searchPaymentType = this.paymentTypeData.paymentType
+    } else {
+      this.paymentTypeData.paymentType = this.paymentTypeData.searchPaymentType
+    }
+  }
+
+  paymentTypeReset() {
+    this.paymentTypeData.paymentType = ''
   }
 
   @Builder
   PaymentTypeRender() {
-    Text('PaymentTypeRender')
+    Column() {
+      Grid() {
+        ForEach(this.paymentTypeData.paymentTypeList, (paymentType: string) => {
+          GridItem() {
+            Text(paymentType)
+              .textStyles(this.paymentTypeData.paymentType === paymentType)
+              .onClick(() => {
+                this.handlePaymentTypeChange(paymentType)
+              })
+          }
+        }, (paymentType: string) => paymentType)
+      }
+      .columnsTemplate('1fr 1fr 1fr')
+      .rowsTemplate('1fr 1fr 1fr')
+      .height(rvp(100))
+
+      Row({ space: rvp(22) }) {
+        Button('重置')
+          .buttonStyles(rvp(95) as number, '#F0F0F0', '#666666')
+          .onClick(() => {
+            this.paymentTypeReset()
+          })
+        Button('查看房源')
+          .buttonStyles(rvp(211), '#67C0A8', Color.White)
+          .onClick(() => {
+            this.paymentTypeSearch()
+          })
+      }.height(rvp(58)).width('100%').backgroundColor(Color.White).justifyContent(FlexAlign.Center)
+    }
+    .height(rvp(158))
+    .width('100%')
+    .backgroundColor(Color.White)
+    .padding({ left: rvp(10), right: rvp(10) })
+
+    Row() {
+    }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(() => {
+      this.paymentTypeClose()
+    })
+  }
+
+  // 排序
+  @State sortData: ISortData = {
+    sortList: [
+      {
+        id: 1,
+        icon: $r('app.media.sort'),
+        text: '综合排序',
+        orderBy: '面积',
+        orderType: 'asc'
+      },
+      {
+        id: 2,
+        icon: $r('app.media.rent'),
+        text: '价格从低到高',
+        orderBy: '价格',
+        orderType: 'asc'
+      },
+      {
+        id: 3,
+        icon: $r('app.media.rent'),
+        text: '价格从高到低',
+        orderBy: '价格',
+        orderType: 'desc'
+      },
+      {
+        id: 4,
+        icon: $r('app.media.area'),
+        text: '面积从大到小',
+        orderBy: '面积',
+        orderType: 'desc'
+      },
+      {
+        id: 5,
+        icon: $r('app.media.area'),
+        text: '面积从小到大',
+        orderBy: '面积',
+        orderType: 'asc'
+      },
+    ],
+    sort: {
+      id: 1,
+      icon: $r('app.media.sort'),
+      text: '综合排序',
+    },
+  }
+
+  handleSortChange(sort: ISortItem) {
+    this.sortData.sort = sort
+    this.sortSearch()
+  }
+
+  sortSearch() {
+    globalEmitter.emit('searchOptionsChange', {
+      orderBy: this.sortData.sort?.orderBy,
+      orderType: this.sortData.sort?.orderType,
+    })
+    this.sortClose()
+  }
+
+  sortClose() {
+    this.currentSearchType = ''
+  }
+
+  sortReset() {
+    this.sortData.sort = {} as ISortItem
   }
 
   @Builder
   SortRender() {
-    Text('SortRender')
+    Column() {
+      Column() {
+        ForEach(this.sortData.sortList, (sort: ISortItem) => {
+          Row({ space: rvp(8) }) {
+            Image(sort.icon).width(rvp(16))
+            Text(sort.text)
+              .fontSize(sm())
+              .fontColor(this.sortData.sort?.id === sort.id ? '#67C0A8' : '#666666')
+          }.height(rvp(34)).onClick(() => {
+            this.handleSortChange(sort)
+          })
+        }, (sort: ISortItem) => sort.id + '')
+      }.padding({ left: rvp(20), top: rvp(8), bottom: rvp(16) }).alignItems(HorizontalAlign.Start)
+    }
+    .width('100%')
+    .backgroundColor(Color.White)
+    .padding({ left: rvp(10), right: rvp(10) })
+    .alignItems(HorizontalAlign.Start)
+
+
+    Row() {
+    }.width('100%').layoutWeight(1).backgroundColor('rgba(0, 0, 0, 0.7)').onClick(() => {
+      this.sortClose()
+    })
   }
 
   build() {
     Column() {
       Row() {
-        ForEach(this.searchTypeList, (item: string, index: number) => {
-          Row({ space: 6 }) {
-            Text(item)
-              .fontSize(12)
-              .fontColor(Color.Black)
+        ForEach(this.searchTypeList, (item: string) => {
+          Row({ space: rvp(6) }) {
+            Text(this.getSearchTypeName(item))
+              .fontSize(sm())
+              .fontColor(this.getSearchTypeNameColor(item))
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .constraintSize({
-                maxWidth: 60,
+                maxWidth: rvp(60),
               })
-            Image(this.currentSearchType === item ? $r('app.media.arrow_down_3_active') : $r('app.media.arrow_down_3')).imageStyles()
+            Image($r('app.media.arrow_down_3')).imageStyles()
           }.width('25%').height('100%').justifyContent(FlexAlign.Center).onClick(() => {
             this.chooseSearchType(item)
           })
         }, (item: string) => item)
-      }.width('100%').height(44).justifyContent(FlexAlign.SpaceBetween)
+      }.width('100%').height(rvp(44)).justifyContent(FlexAlign.SpaceBetween)
 
       if (this.currentSearchType === '地区') {
         this.LocationRender()
@@ -274,27 +581,37 @@ export default struct SearchFilter {
 
 @Extend(Image)
 function imageStyles() {
-  .width(20).height(20).objectFit(ImageFit.Fill)
+  .width(rvp(12)).height(rvp(12)).objectFit(ImageFit.Fill)
 }
 
 @Extend(Button)
-function buttonStyles(width: number, bgColor: string | Resource, fontColor: string | Resource) {
+function buttonStyles(width: number,
+  bgColor: ResourceColor,
+  fontColor: ResourceColor) {
   .type(ButtonType.Normal)
   .width(width)
-  .height(26)
-  .borderRadius(20)
-  .fontSize(12)
+  .height(rvp(26))
+  .borderRadius(rvp(10))
+  .fontSize(sm())
   .backgroundColor(bgColor)
   .fontColor(fontColor)
 }
 
 @Extend(Text)
 function textStyles(active: boolean) {
-  .fontSize(12)
+  .fontSize(sm())
   .fontColor(active ? Color.White : '#666666')
-  .width(94)
-  .height(26)
-  .backgroundColor(active ? '#67C0A8' : '#F7F7F7')
-  .borderRadius(20)
+  .width(rvp(94))
+  .height(rvp(26))
+  .backgroundColor(active ? '#67C0A8' : '#F0F0F0')
+  .borderRadius(rvp(10))
   .textAlign(TextAlign.Center)
+}
+
+function rvp(arg0: number): number {
+  return arg0
+}
+
+function sm(): string | number {
+  return 12
 }

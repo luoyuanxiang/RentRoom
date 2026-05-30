@@ -1,6 +1,20 @@
 {
   "app": {
-    "signingConfigs": [],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\11413\\.ohos\\config\\default_RentRoom_k7ecjDpMa4WtFL_coBuWT1DQG86GqT0--zA-tM1ZH0o=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001B4BBE4116643AE37CADFD7E411C973C1E133ED68FD78B6019F341A22C6D1F9FFAEDEA8949C23FD4",
+          "profile": "C:\\Users\\11413\\.ohos\\config\\default_RentRoom_k7ecjDpMa4WtFL_coBuWT1DQG86GqT0--zA-tM1ZH0o=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\11413\\.ohos\\config\\default_RentRoom_k7ecjDpMa4WtFL_coBuWT1DQG86GqT0--zA-tM1ZH0o=.p12",
+          "storePassword": "0000001BF38D742F74CC3166AAC3EAB0B7D9F9A5667B3A9AB973E6EA825893927CDABBE734020AEB3E98B0"
+        }
+      }
+    ],
     "products": [
       {
         "name": "default",
