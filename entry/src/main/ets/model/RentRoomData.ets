@@ -7,22 +7,6 @@ export type IOrderBy = "面积" | "价格"
 
 export type IOrderType = "asc" | "desc"
 
-export interface ILocationData {
-  provinceList: IProvinceItem[],
-  cityList: ICityItem[],
-  districtList: IDistrictItem[],
-  provinceCode: string,
-  cityCode: string,
-  districtCode: string,
-  isSearch: boolean,
-  searchProvinceCode: string,
-  searchCityCode: string,
-  searchDistrictCode: string,
-  searchDistrictName: string
-  maxRent?: number;
-  minRent?: number;
-}
-
 export interface IGetRentRoomListParams {
   page: number;
   limit: number;
@@ -95,13 +79,6 @@ export interface IRentPriceItem {
 
 export type IRentPriceList = IRentPriceItem[]
 
-export interface IRentPriceData {
-  rentPriceList: IRentPriceItem[]
-  rentPrice?: IRentPriceItem,
-  isSearch?: boolean,
-  searchRentPrice?: IRentPriceItem
-}
-
 
 export interface ISortItem {
   id: number;
@@ -109,20 +86,4 @@ export interface ISortItem {
   text: string;
   orderBy?: IOrderBy;
   orderType?: IOrderType;
-}
-
-export type ISortList = ISortItem[]
-
-export interface ISortData {
-  sortList: ISortItem[]
-  sort?: ISortItem,
-  isSearch?: boolean,
-  searchSort?: ISortItem
-}
-
-export interface IPaymentTypeData {
-  paymentTypeList: string[],
-  isSearch: boolean,
-  paymentType: string,
-  searchPaymentType: string
 }

@@ -1,6 +1,6 @@
 import { getRentRoomListApi } from "../../api/rentRoom";
 import Empty from "../../components/Empty";
-import { IActivity, IGetRentRoomListParams, IRentRoomItem, RentRoomListDataSource } from "../../model/RentRoomData";
+import { IGetRentRoomListParams, IRentRoomItem, RentRoomListDataSource } from "../../model/RentRoomData";
 import { ITagItem } from "../../model/RoomRecommendDataSource";
 import { globalEmitter } from "../../utils/emitter";
 
@@ -22,17 +22,15 @@ export default struct WaterfallFlow {
 
   registerGlobalEmitter() {
     globalEmitter.on('searchOptionsChange', async (searchOptions: Partial<IGetRentRoomListParams>) => {
+      this.searchOptions.provinceCode = searchOptions.provinceCode
+      this.searchOptions.cityCode = searchOptions.cityCode
+      this.searchOptions.districtCode = searchOptions.districtCode
+      this.searchOptions.maxRent = searchOptions.maxRent
+      this.searchOptions.minRent = searchOptions.minRent
+      this.searchOptions.orderBy = searchOptions.orderBy
+      this.searchOptions.paymentType = searchOptions.paymentType
       this.searchOptions.page = 1;
       this.searchOptions.limit = 10;
-      if (searchOptions.provinceCode) {
-        this.searchOptions.provinceCode = searchOptions.provinceCode;
-      }
-      if (searchOptions.cityCode) {
-        this.searchOptions.cityCode = searchOptions.cityCode;
-      }
-      if (searchOptions.districtCode) {
-        this.searchOptions.districtCode = searchOptions.districtCode;
-      }
       this.getRentRoomList()
     })
   }
@@ -79,7 +77,7 @@ export default struct WaterfallFlow {
   }
 
   build() {
-    if (this.rootRoomListDataSource.totalCount() > 0) {
+    if (this.total > 0) {
       Column() {
         WaterFlow(
           {

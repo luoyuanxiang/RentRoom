@@ -45,6 +45,10 @@ export default struct RoomRecommend {
         }, () => {})
       })
     }.width('100%')
+    .padding({
+      top: 10,
+      bottom: 10
+    })
   }
 
   @Builder

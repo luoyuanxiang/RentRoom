@@ -13,5 +13,6 @@ export default struct PlanList {
       })
     }.width('100%')
     .justifyContent(FlexAlign.SpaceBetween)
+    .padding({ top: 10 })
   }
 }

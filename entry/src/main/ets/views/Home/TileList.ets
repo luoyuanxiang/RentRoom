@@ -28,5 +28,9 @@ export default struct TileList {
     }
     .justifyContent(FlexAlign.SpaceBetween)
     .width('100%')
+    .padding({
+      top: 10,
+      bottom: 10
+    })
   }
 }
