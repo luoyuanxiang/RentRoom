@@ -169,6 +169,14 @@ export default struct WaterfallFlow {
               .width(165)
               .height('100%')
             }.height(room.activity ? 320 : 210)
+            .onClick(() => {
+              this.getUIContext().getRouter().pushUrl({
+                url: 'pages/RentRoom/RentRoomDetail',
+                params: {
+                  id: room.id
+                }
+              }, () => {})
+            })
 
           }, (room: IRentRoomItem) => room.id)
         }

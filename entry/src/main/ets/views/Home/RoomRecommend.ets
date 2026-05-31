@@ -129,6 +129,14 @@ export default struct RoomRecommend {
             }.alignContent(Alignment.TopStart).backgroundColor($r('sys.color.white'))
 
           }.height(210)
+          .onClick(() => {
+            this.getUIContext().getRouter().pushUrl({
+              url: 'pages/RentRoom/RentRoomDetail',
+              params: {
+                id: item.id
+              }
+            }, () => {})
+          })
         })
       }
       .columnsTemplate('1fr 1fr')

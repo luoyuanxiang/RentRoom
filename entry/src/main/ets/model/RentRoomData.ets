@@ -87,3 +87,91 @@ export interface ISortItem {
   orderBy?: IOrderBy;
   orderType?: IOrderType;
 }
+
+
+export interface IRentRoomDetail {
+  address: string;
+  discounts: IDiscount[];
+  distanceInfo: IDistanceInfo;
+  householdItem: IHouseholdItem[];
+  housePicture: IHousePicture[];
+  houseTitle: string;
+  id: string;
+  metaInfo: IMetaInfo[];
+  rentArea: string;
+  rentInfo: IRentInfo[];
+  rentPriceUnit: string;
+  rentPriceUnitListing: string;
+  rentTerm: IRentTerm;
+  support: ISupport[];
+  tags: ITag[];
+}
+
+export interface IDistanceInfo {
+  line: string;
+  name: string
+  distance: string
+}
+
+export interface IDiscount {
+  image: string;
+  tagTxt: string;
+  tagTxtBgAroundColor: string;
+  tagTxtColor: string;
+  txt: string;
+}
+
+export interface IHousePicture {
+  picList: string[];
+  spaceName: string;
+}
+
+export interface IHouseholdItem {
+  itemList: IItemList[];
+  name: string;
+}
+
+export interface IItemList {
+  icon: string;
+  value: string;
+}
+
+export interface IMetaInfo {
+  desc: string;
+  name: string;
+}
+
+export interface IRentInfo {
+  image: string;
+  title: string;
+  userTag: string;
+}
+
+export interface IRentTerm {
+  checkInTime: string;
+  green: string;
+  grounding: string;
+  heating: string;
+  house: string;
+  kitchen: string;
+  lift: string;
+  protection: string;
+  renovation: string;
+  seeTime: string;
+  term: string;
+  year: string;
+}
+
+export interface ISupport {
+  image: string;
+  subTitle: string;
+  title: string;
+}
+
+export interface ITag {
+  name: string;
+}
+
+export interface IdQuery {
+  id: string
+}

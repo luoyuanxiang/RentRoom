@@ -15,6 +15,11 @@ export default struct SearchBar {
           .height(18)
           .margin({left: 10, right: 10})
           .fillColor('#7F7F7F')
+          .onClick(() => {
+            this.getUIContext().getRouter().pushUrl({
+              url: 'pages/RentRoom/RentRoomList'
+            }, () => {})
+          })
 
         TextInput({ placeholder: '公司/地铁/小区，马上搜索'})
           .layoutWeight(1)
